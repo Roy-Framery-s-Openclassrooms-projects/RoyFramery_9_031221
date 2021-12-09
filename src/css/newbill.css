@@ -7,7 +7,15 @@
   width: 75%;
   margin-top: 16px;
 }
-
+.col-half[data-error-visible="true"]::after {
+    content: attr(data-error);
+    font-size: 14px;
+    color: #e54858;
+}
+.col-half p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
 .col-half-row {
   display:flex;
   width: 75%;
