@@ -13,7 +13,6 @@ export default class NewBill {
 
         const file = this.document.querySelector(`input[data-testid="file"]`);
         file.addEventListener("change", this.handleChangeFile);
-
         this.fileUrl = null
         this.fileName = null
         new Logout({ document, localStorage, onNavigate })
@@ -28,7 +27,7 @@ export default class NewBill {
         const fileInputParent = this.document.querySelector(`input[data-testid="file"]`).parentNode;
         const fileInput = this.document.querySelector(`input[data-testid="file"]`)
         const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
-
+        console.log(this.document.querySelector(`input[data-testid="file"]`).files)
         if (fileTypes.includes(file.type)) {
             const filePath = e.target.value.split(/\\/g);
             const fileName = filePath[filePath.length-1];
@@ -50,7 +49,7 @@ export default class NewBill {
 
     handleSubmit = e => {
         e.preventDefault()
-        console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+        // console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
         const email = JSON.parse(localStorage.getItem("user")).email
         const bill = {
             email,
@@ -58,7 +57,7 @@ export default class NewBill {
             name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
             amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
             date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
-            vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+            vat: e.target.querySelector(`input[data-testid="vat"]`).value || 0,
             pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
             commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value || "",
             fileUrl: this.fileUrl,

@@ -191,8 +191,8 @@ describe('Given I am connected as Admin and I am on Dashboard page and I clicked
         document, onNavigate, firestore, bills, localStorage: window.localStorage
       })
 
-      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
       const eye = screen.getByTestId('icon-eye-d')
+      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
       expect(handleClickIconEye).toHaveBeenCalled()

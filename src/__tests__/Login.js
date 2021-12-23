@@ -2,6 +2,7 @@ import LoginUI from "../views/LoginUI"
 import Login from '../containers/Login.js'
 import { ROUTES } from "../constants/routes"
 import { fireEvent, screen } from "@testing-library/dom"
+import { bills } from "../fixtures/bills.js";
 
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on employee button Login In", () => {
@@ -73,7 +74,7 @@ describe("Given that I am a user on login page", () => {
 
     // we have to mock navigation to test it
     const onNavigate = (pathname) => {
-      document.body.innerHTML = ROUTES({ pathname })
+      document.body.innerHTML = ROUTES({ pathname, data: bills })
     }
 
     let PREVIOUS_LOCATION = ''
