@@ -74,8 +74,9 @@ describe("Given I am connected as an employee", () => {
                 firestore,
                 localStorage: window.localStorage
             });
-            const eye = screen.getByTestId("icon-eye");
-            const handleClickIconEye = jest.fn(billsClass.handleClickIconEye);
+
+            const eye = screen.getByTestId('icon-eye');
+            const handleClickIconEye = jest.fn(billsClass.handleClickIconEye(eye));
             eye.addEventListener("click", handleClickIconEye);
             userEvent.click(eye);
             expect(handleClickIconEye).toHaveBeenCalled();

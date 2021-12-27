@@ -3,7 +3,7 @@ class Firestore {
     this.store = window.firebase ? window.firebase.firestore() : () => null
     this.storage = window.firebase ? window.firebase.storage() : () => null
   }
-
+  
   user = uid => this.store.doc(`users/${uid}`)
   users = () => this.store.collection('users')
 

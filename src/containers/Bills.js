@@ -12,6 +12,7 @@ export default class {
         );
         if (buttonNewBill)
             buttonNewBill.addEventListener("click", this.handleClickNewBill);
+            
         const iconEye = document.querySelectorAll(
             `div[data-testid="icon-eye"]`
         );
@@ -36,7 +37,8 @@ export default class {
             .html(
                 `<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`
             );
-        $("#modaleFile").modal("show");
+        // if (typeof $('#modaleFile').modal === 'function') $('#modaleFile').modal('show')
+        // $("#modaleFile").modal("show");
     };
 
     // not need to cover this function by tests
