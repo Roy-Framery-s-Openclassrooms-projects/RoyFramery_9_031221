@@ -6,7 +6,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import Bills from "../containers/Bills.js";
 import { ROUTES } from "../constants/routes";
 import firebase from "../__mocks__/firebase";
-
+import { Firestore } from "../app/Firestore.js";
 
 describe("Given I am connected as an employee", () => {
     describe("When I am on Bills Page", () => {
@@ -14,15 +14,29 @@ describe("Given I am connected as an employee", () => {
             Object.defineProperty(window, "localStorage", {
                 value: localStorageMock,
             });
-            const user = JSON.stringify({
-                type: "Employee",
-            });
-            window.localStorage.setItem("user", user);
-            const html = BillsUI({ data: [] });
-            document.body.innerHTML = html;
-            const icon = screen.getByTestId("icon-window");
-            icon.setAttribute("class", "active-icon");
-            expect(icon.classList.contains("active-icon")).toBe(true);
+            // const user = JSON.stringify({
+            //     type: "Employee",
+            // });
+            // window.localStorage.setItem("user", user);
+            // const html = BillsUI({ data: [] });
+            // document.body.innerHTML = html;
+            // const icon = screen.getByTestId("icon-window");
+            // icon.setAttribute("class", "active-icon");
+            // expect(icon.classList.contains("active-icon")).toBe(true);
+
+            Firestore.bills = () => ({ firebase, get: jest.fn().mockResolvedValue() })
+            window.localStorage.setItem(
+                "user",
+                JSON.stringify({
+                    email: 'test@test.com',
+                    type: "Employee",
+                }),
+            )
+            const pathname = ROUTES_PATH["Bills"]
+            Object.defineProperty(window, "location", { value: { hash: pathname } })
+            document.body.innerHTML = `<div id="root"></div>`
+            Router()
+            expect(screen.getByTestId("icon-window").classList).toContain("active-icon")
         });
 
         test("then the loader must appear before the tickets are displayed", () => {
