@@ -1,42 +1,36 @@
 import { screen } from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import { ROUTES_PATH, ROUTES } from "../constants/routes";
+import firestore from "../app/Firestore";
+import Router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
-import { ROUTES } from "../constants/routes";
-import firebase from "../__mocks__/firebase";
-import { Firestore } from "../app/Firestore.js";
+import firebase from "../__mocks__/firebase.js";
+import userEvent from "@testing-library/user-event";
 
 describe("Given I am connected as an employee", () => {
     describe("When I am on Bills Page", () => {
-        test("Then bill icon in vertical layout should be highlighted", () => {
-            Object.defineProperty(window, "localStorage", {
-                value: localStorageMock,
-            });
-            // const user = JSON.stringify({
-            //     type: "Employee",
-            // });
-            // window.localStorage.setItem("user", user);
-            // const html = BillsUI({ data: [] });
-            // document.body.innerHTML = html;
-            // const icon = screen.getByTestId("icon-window");
-            // icon.setAttribute("class", "active-icon");
-            // expect(icon.classList.contains("active-icon")).toBe(true);
+        test("Then bill icon in vertical layout should be highlighted", async() => {
+            Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-            Firestore.bills = () => ({ firebase, get: jest.fn().mockResolvedValue() })
-            window.localStorage.setItem(
-                "user",
-                JSON.stringify({
-                    email: 'test@test.com',
-                    type: "Employee",
-                }),
-            )
-            const pathname = ROUTES_PATH["Bills"]
-            Object.defineProperty(window, "location", { value: { hash: pathname } })
-            document.body.innerHTML = `<div id="root"></div>`
-            Router()
-            expect(screen.getByTestId("icon-window").classList).toContain("active-icon")
+			const user = JSON.stringify({ type: "Employee" });
+			window.localStorage.setItem("user", user);
+
+            const pathname = ROUTES_PATH["Bills"];
+			Object.defineProperty(window, "location", {
+				value: {
+					hash: pathname
+				}
+			});
+
+			firestore.bills = () => ({ bills, get: jest.fn().mockResolvedValue() });
+
+			document.body.innerHTML = `<div id="root"></div>`;
+			Router();
+
+			const icon = screen.getByTestId('icon-window');
+			expect(icon.classList.contains("active-icon")).toBeTruthy();
         });
 
         test("then the loader must appear before the tickets are displayed", () => {

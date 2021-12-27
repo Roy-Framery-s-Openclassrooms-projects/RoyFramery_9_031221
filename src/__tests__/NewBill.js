@@ -7,7 +7,6 @@ import { ROUTES } from "../constants/routes";
 import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom/extend-expect";
 import firestore from "../app/Firestore.js";
-// jest.mock("../app/Firestore.js")
 
 describe("Given I am connected as an employee", () => {
     beforeEach(() => {
@@ -235,20 +234,6 @@ describe("Given I am connected as an employee", () => {
                 };
                 const newBill = new NewBill ({
                     document, 
-                    // firestore : jest.mock("../app/Firestore.js", () => {
-                    //     return {
-                    //         storage : jest.fn()
-                    //     }
-                    // })
-                    firestore : jest.fn().mockImplementation(() => {
-                        return {
-                            storage: jest.fn().mockImplementation(() => {
-                                return {
-                                    ref: jest.fn()
-                                }
-                            })
-                        }
-                    })
                 })
                 const handleChangeFile = jest.fn(newBill.handleChangeFile)
                 const inputFile = screen.getByTestId("file");
