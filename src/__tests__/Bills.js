@@ -12,7 +12,7 @@ import userEvent from "@testing-library/user-event";
 describe("Given I am connected as an employee", () => {
     describe("When I am on Bills Page", () => {
         test("Then bill icon in vertical layout should be highlighted", async() => {
-            Object.defineProperty(window, "localStorage", { value: localStorageMock });
+            firestore.bills = () => ({ get: jest.fn().mockResolvedValue() });
 
 			const user = JSON.stringify({ type: "Employee" });
 			window.localStorage.setItem("user", user);
@@ -23,8 +23,6 @@ describe("Given I am connected as an employee", () => {
 					hash: pathname
 				}
 			});
-
-			firestore.bills = () => ({ bills, get: jest.fn().mockResolvedValue() });
 
 			document.body.innerHTML = `<div id="root"></div>`;
 			Router();

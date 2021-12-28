@@ -1,17 +1,47 @@
 import { fireEvent, screen } from "@testing-library/dom";
-import NewBillUI from "../views/NewBillUI.js";
+// import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import userEvent from "@testing-library/user-event";
-import { localStorageMock } from "../__mocks__/localStorage.js";
-import { ROUTES } from "../constants/routes";
+// import { localStorageMock } from "../__mocks__/localStorage.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes";
 import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom/extend-expect";
 import firestore from "../app/Firestore.js";
+import Router from "../app/Router.js";
+
 
 describe("Given I am connected as an employee", () => {
     beforeEach(() => {
-        const html = NewBillUI();
-        document.body.innerHTML = html;
+        firestore.storage.ref = jest.fn().mockImplementation(() => {
+            return {
+                put: jest.fn().mockImplementation(() => {
+                    return {
+                        then : jest.fn().mockResolvedValue(),
+                    }
+                }),
+            }
+        });
+        firestore.bills = () => ({ 
+            get: jest.fn().mockResolvedValue(),
+            add: jest.fn().mockResolvedValue() 
+        });
+
+        const user = JSON.stringify({ 
+            type: "Employee",
+            email : 'a@a',
+        });
+        window.localStorage.setItem("user", user);
+
+        const pathname = ROUTES_PATH["NewBill"];
+        Object.defineProperty(window, "location", {
+            value: {
+                hash: pathname
+            }
+        });
+
+        document.body.innerHTML = `<div id="root"></div>`;
+        Router();
+
     });
 
     describe("When I am on NewBill Page", () => {
@@ -34,8 +64,6 @@ describe("Given I am connected as an employee", () => {
 
         describe("When I do not fill fields and I click on send button", () => {
             test("Then It should renders NewBill page", () => {
-                const inputType = screen.getByTestId("expense-type");
-                expect(inputType.value).toBe("Transports");
 
                 const inputName = screen.getByTestId("expense-name");
                 expect(inputName.getAttribute("placeholder")).toBe(
@@ -65,10 +93,7 @@ describe("Given I am connected as an employee", () => {
                 expect(inputFile.value).toBe("");
 
                 const form = screen.getByTestId("form-new-bill");
-                const handleSubmit = jest.fn((e) => e.preventDefault());
-
-                form.addEventListener("submit", handleSubmit);
-                fireEvent.submit(form);
+                userEvent.click(form);
                 expect(screen.getByTestId("form-new-bill")).toBeTruthy();
             });
         });
@@ -116,19 +141,10 @@ describe("Given I am connected as an employee", () => {
                     },
                 });
 
-                Object.defineProperty(window, "localStorage", {
-                    value: localStorageMock,
-                });
-                const user = JSON.stringify({
-                    type: "Employee",
-                    email: "johnedoe@email.com",
-                });
-                window.localStorage.setItem("user", user);
-
                 const onNavigate = (pathname) => {
                     document.body.innerHTML = ROUTES({ pathname, data: bills });
                 };
-                const firestore = null;
+
                 const newBill = new NewBill({
                     document,
                     onNavigate,
@@ -144,35 +160,33 @@ describe("Given I am connected as an employee", () => {
                 expect(billsPage).toBeTruthy();
             });
 
-            // test('Then It should create a new bill', () => {
-            //     const onNavigate = (pathname) => {
-            //         document.body.innerHTML = ROUTES({ pathname, data: bills });
-            //     };
-            //     const newBill = new NewBill({
-            //         document,
-            //         onNavigate,
-            //         firestore : firestore,
-            //         localstorage: null
-            //     });
-            //     const bill = [{
-            //         email: "a@a",
-            //         type: "Transports",
-            //         name:  "name",
-            //         amount: "300",
-            //         date:  "2021-12-22",
-            //         vat: "20",
-            //         pct: "20",
-            //         commentary: "",
-            //         fileUrl: "https//projet9.com",
-            //         fileName: "Image.jpg",
-            //         status: 'pending'
-            //     }];
+            test('Then It should create a new bill', () => {
+                const onNavigate = (pathname) => {
+                    document.body.innerHTML = ROUTES({ pathname, data: bills });
+                };
+                const newBill = new NewBill({
+                    document,
+                    onNavigate,
+                    firestore: firestore,
+                });
 
-            //     const createBill = jest.fn(newBill.createBill(bill));
-            //     // createBill(bill);
-
-            //     // expect(createBill(bill)).toHaveBeenCalled();
-            // })
+                const bill = [{
+                    email: "a@a",
+                    type: "Transports",
+                    name:  "name",
+                    amount: "300",
+                    date:  "2021-12-22",
+                    vat: "20",
+                    pct: "20",
+                    commentary: "",
+                    fileUrl: "https//projet9.com",
+                    fileName: "Image.jpg",
+                    status: 'pending'
+                }];
+                const createBill = jest.fn(newBill.createBill(bill));
+                createBill(bill);
+                expect(createBill).toHaveBeenCalled()
+            })
         });
 
         describe("When I select a file in wrong format (not jpg, jpeg or png)", () => {
@@ -228,33 +242,30 @@ describe("Given I am connected as an employee", () => {
                 ];
                 expect(authorizedFileType).toContain(inputFile.files[0].type)
             });
+
             test("Then It should display the file name in the input", () => {
+
                 const inputData = {
                     file: "image.png",
+                    type: 'image/png'
                 };
-                const newBill = new NewBill ({
-                    document, 
-                })
-                const handleChangeFile = jest.fn(newBill.handleChangeFile)
+
                 const inputFile = screen.getByTestId("file");
-                inputFile.addEventListener("change", handleChangeFile)
                 fireEvent.change(inputFile, {
                     target: {
                         files: [
                             new File(["image"], inputData.file, {
-                                type: "image/png",
+                                type: inputData.type,
                             }),
                         ],
                     },
                 });
-                const authorizedFileType = [
-                    'image/png'
-                ];
-                expect(authorizedFileType).toContain(inputFile.files[0].type);
+
                 expect(inputFile.parentNode).toHaveAttribute(
                     "data-error-visible",
                     "false"
                 );
+                expect(inputFile.files[0].name).toBe(inputData.file);
             });
         });
     });
