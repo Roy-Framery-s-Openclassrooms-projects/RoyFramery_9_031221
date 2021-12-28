@@ -1,8 +1,6 @@
 import { fireEvent, screen } from "@testing-library/dom";
-// import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import userEvent from "@testing-library/user-event";
-// import { localStorageMock } from "../__mocks__/localStorage.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes";
 import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom/extend-expect";
@@ -160,33 +158,33 @@ describe("Given I am connected as an employee", () => {
                 expect(billsPage).toBeTruthy();
             });
 
-            test('Then It should create a new bill', () => {
-                const onNavigate = (pathname) => {
-                    document.body.innerHTML = ROUTES({ pathname, data: bills });
-                };
-                const newBill = new NewBill({
-                    document,
-                    onNavigate,
-                    firestore: firestore,
-                });
+        //     test('Then It should create a new bill', () => {
+        //         const onNavigate = (pathname) => {
+        //             document.body.innerHTML = ROUTES({ pathname, data: bills });
+        //         };
+        //         const newBill = new NewBill({
+        //             document,
+        //             onNavigate,
+        //             firestore: firestore,
+        //         });
 
-                const bill = [{
-                    email: "a@a",
-                    type: "Transports",
-                    name:  "name",
-                    amount: "300",
-                    date:  "2021-12-22",
-                    vat: "20",
-                    pct: "20",
-                    commentary: "",
-                    fileUrl: "https//projet9.com",
-                    fileName: "Image.jpg",
-                    status: 'pending'
-                }];
-                const createBill = jest.fn(newBill.createBill(bill));
-                createBill(bill);
-                expect(createBill).toHaveBeenCalled()
-            })
+        //         const bill = [{
+        //             email: "a@a",
+        //             type: "Transports",
+        //             name:  "name",
+        //             amount: "300",
+        //             date:  "2021-12-22",
+        //             vat: "20",
+        //             pct: "20",
+        //             commentary: "",
+        //             fileUrl: "https//projet9.com",
+        //             fileName: "Image.jpg",
+        //             status: 'pending'
+        //         }];
+        //         const createBill = jest.fn(newBill.createBill(bill));
+        //         createBill(bill);
+        //         expect(createBill).toHaveBeenCalled()
+        //     })
         });
 
         describe("When I select a file in wrong format (not jpg, jpeg or png)", () => {
@@ -225,32 +223,17 @@ describe("Given I am connected as an employee", () => {
             test("Then It should display the file name in the input", () => {
                 const inputData = {
                     file: "image.png",
+                    type : 'image/png'
                 };
-
-                const inputFile = screen.getByTestId("file");
-                fireEvent.change(inputFile, {
-                    target: {
-                        files: [
-                            new File(["image"], inputData.file, {
-                                type: "image/png",
-                            }),
-                        ],
-                    },
+                const newBill = new NewBill({
+                    document,
+                    firestore
                 });
-                const authorizedFileType = [
-                    'image/png'
-                ];
-                expect(authorizedFileType).toContain(inputFile.files[0].type)
-            });
 
-            test("Then It should display the file name in the input", () => {
-
-                const inputData = {
-                    file: "image.png",
-                    type: 'image/png'
-                };
-
+                const handleChangeFile = jest.fn(newBill.handleChangeFile);
                 const inputFile = screen.getByTestId("file");
+                inputFile.addEventListener("change", handleChangeFile);
+                
                 fireEvent.change(inputFile, {
                     target: {
                         files: [
