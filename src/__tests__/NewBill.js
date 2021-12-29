@@ -7,23 +7,8 @@ import "@testing-library/jest-dom/extend-expect";
 import firestore from "../app/Firestore.js";
 import Router from "../app/Router.js";
 
-
 describe("Given I am connected as an employee", () => {
     beforeEach(() => {
-        firestore.storage.ref = jest.fn().mockImplementation(() => {
-            return {
-                put: jest.fn().mockImplementation(() => {
-                    return {
-                        then : jest.fn().mockResolvedValue(),
-                    }
-                }),
-            }
-        });
-        firestore.bills = () => ({ 
-            get: jest.fn().mockResolvedValue(),
-            add: jest.fn().mockResolvedValue() 
-        });
-
         const user = JSON.stringify({ 
             type: "Employee",
             email : 'a@a',
@@ -99,6 +84,20 @@ describe("Given I am connected as an employee", () => {
         describe("When I do fill required fileds in good format and I click on submit button", () => {
             
             test("Then it should render the bills page", () => {
+                firestore.storage.ref = jest.fn().mockImplementation(() => {
+                    return {
+                        put: jest.fn().mockImplementation((e) => {
+                            return {
+                                then : jest.fn().mockResolvedValue(),
+                            }
+                        }),
+                    }
+                });
+                firestore.bills = () => ({ 
+                    get: jest.fn().mockResolvedValue(),
+                    add: jest.fn().mockResolvedValue() 
+                });
+
                 const inputData = {
                     expense: "Transports",
                     date: "2021-12-22",
@@ -152,39 +151,12 @@ describe("Given I am connected as an employee", () => {
                 const handleSubmit = jest.fn(newBill.handleSubmit);
                 submitButton.addEventListener("click", handleSubmit);
                 userEvent.click(submitButton);
+
                 expect(handleSubmit).toHaveBeenCalled();
 
                 const billsPage = screen.getByText("Mes notes de frais");
                 expect(billsPage).toBeTruthy();
             });
-
-        //     test('Then It should create a new bill', () => {
-        //         const onNavigate = (pathname) => {
-        //             document.body.innerHTML = ROUTES({ pathname, data: bills });
-        //         };
-        //         const newBill = new NewBill({
-        //             document,
-        //             onNavigate,
-        //             firestore: firestore,
-        //         });
-
-        //         const bill = [{
-        //             email: "a@a",
-        //             type: "Transports",
-        //             name:  "name",
-        //             amount: "300",
-        //             date:  "2021-12-22",
-        //             vat: "20",
-        //             pct: "20",
-        //             commentary: "",
-        //             fileUrl: "https//projet9.com",
-        //             fileName: "Image.jpg",
-        //             status: 'pending'
-        //         }];
-        //         const createBill = jest.fn(newBill.createBill(bill));
-        //         createBill(bill);
-        //         expect(createBill).toHaveBeenCalled()
-        //     })
         });
 
         describe("When I select a file in wrong format (not jpg, jpeg or png)", () => {
