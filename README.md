@@ -2,12 +2,7 @@
 
 Clonez le projet :
 ```
-$ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR.git
-```
-
-Allez au repo cloné :
-```
-$ cd Billed-app-FR
+$ git clone https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221.git
 ```
 
 Installez les packages npm (décrits dans `package.json`) :

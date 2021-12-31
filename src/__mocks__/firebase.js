@@ -70,6 +70,10 @@ export default {
             ],
         });
     },
-    add: (bill) => {
+    post: (bills, newBill) => {
+        bills.data.push(newBill);
+        return Promise.resolve({
+            data : bills.data
+        })
     }
 };

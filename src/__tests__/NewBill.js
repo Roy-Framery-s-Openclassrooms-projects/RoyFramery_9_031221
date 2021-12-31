@@ -6,28 +6,30 @@ import { bills } from "../fixtures/bills.js";
 import "@testing-library/jest-dom/extend-expect";
 import firestore from "../app/Firestore.js";
 import Router from "../app/Router.js";
+import firebase from '../__mocks__/firebase.js';
+import BillsUI from "../views/BillsUI.js";
 
 describe("Given I am connected as an employee", () => {
-    beforeEach(() => {
-        const user = JSON.stringify({ 
-            type: "Employee",
-            email : 'a@a',
-        });
-        window.localStorage.setItem("user", user);
-
-        const pathname = ROUTES_PATH["NewBill"];
-        Object.defineProperty(window, "location", {
-            value: {
-                hash: pathname
-            }
-        });
-
-        document.body.innerHTML = `<div id="root"></div>`;
-        Router();
-
-    });
-
+    
     describe("When I am on NewBill Page", () => {
+        beforeEach(() => {
+            const user = JSON.stringify({ 
+                type: "Employee",
+                email : 'a@a',
+            });
+            window.localStorage.setItem("user", user);
+    
+            const pathname = ROUTES_PATH["NewBill"];
+            Object.defineProperty(window, "location", {
+                value: {
+                    hash: pathname
+                }
+            });
+    
+            document.body.innerHTML = `<div id="root"></div>`;
+            Router();
+    
+        });
         test("Then input date is required ", () => {
             const inputDate = screen.getByTestId("datepicker");
             expect(inputDate).toBeRequired();
@@ -222,6 +224,56 @@ describe("Given I am connected as an employee", () => {
                 );
                 expect(inputFile.files[0].name).toBe(inputData.file);
             });
+        });
+    });
+});
+
+// test d'intégration POST
+describe("Given I am a user connected as Employee", () => {
+    describe("When I do fill required fileds in good format and I click on submit button", () => {
+        test("Then Add new bill to mock API POST", async () => {
+            const getSpyBills = jest.spyOn(firebase, "get")
+            const billsData = await firebase.get()
+            const bill = {
+                email: 'a@a',
+                type: 'Transports',
+                name:  'Train Paris-Suisse',
+                amount: '160€',
+                date:  '2021-12-24',
+                vat: 0,
+                pct: 20,
+                commentary: "",
+                fileUrl: 'https://stockimage.com/image.png',
+                fileName: 'image.png',
+                status: 'pending'
+            }
+
+            const getSpyAddBill = jest.spyOn(firebase, "post")
+            const addedBill = await firebase.post(billsData, bill)
+            
+            expect(getSpyBills).toHaveBeenCalledTimes(1)
+            expect(getSpyAddBill).toHaveBeenCalledTimes(1)
+            expect(addedBill.data.length).toBe(5)
+        });
+
+        test("Then add bill to an API and fails with 404 message error", async () => {
+            firebase.post.mockImplementationOnce(() =>
+                Promise.reject(new Error("Erreur 404"))
+            )
+            const html = BillsUI({ error: "Erreur 404" })
+            document.body.innerHTML = html
+            const message = await screen.getByText(/Erreur 404/)
+            expect(message).toBeTruthy()
+        });
+
+        test("Then add bill to an API and fails with 500 message error", async () => {
+            firebase.post.mockImplementationOnce(() =>
+            Promise.reject(new Error("Erreur 500"))
+            )
+            const html = BillsUI({ error: "Erreur 500" })
+            document.body.innerHTML = html
+            const message = await screen.getByText(/Erreur 500/)
+            expect(message).toBeTruthy()
         });
     });
 });
