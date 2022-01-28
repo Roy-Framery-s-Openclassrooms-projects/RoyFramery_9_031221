@@ -20,7 +20,7 @@
 
 __*Billed*__ is the ninth project I made during this training. As a front-end developer, I replaces a front-end developer who left the company before finishing the application he was working on. The goals 🎯 of this project was to, firstable, understand the code base that had already been implemented and its logic. And secondly, I had some [issues](https://www.notion.so/a7a612fc166747e78d95aa38106a55ec?v=2a8d3553379c4366b6f66490ab8f0b90) to solve.   
 
-For this purpose, I had at my disposal a description of the [fonctionnalities](./readMe/fonctionalities.pdf) that I was working on, the [code base](https://github.com/OpenClassrooms-Student-Center/Billed-app-FR), the [mockup](https://www.figma.com/file/xqeE1ZKlHUWi2Efo8r73NK/UI-Design-Les-Petits-Plats-FR) and an example of [End to end plan](./readMe/e2e_plan.pdf).
+For this purpose, I had at my disposal a description of the [fonctionnalities](./readMe/fonctionalities.pdf) that I was working on, the [code base](https://github.com/OpenClassrooms-Student-Center/Billed-app-FR) and an example of [End to end plan](./readMe/e2e_plan.pdf).
 
 [Back to the top](#billed)
 
@@ -38,7 +38,7 @@ the bug concerned the bills that the user could add, which were not ordered in c
 
 the bug concerned the admin's login that wan'st working. The file scr/containers/Login.js was concerned by this bug !
 
-> fixed bug report [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/7fedf340373056ba380a5922814ab3c8ed90132d)
+> fixed bug report [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/05c2dbd5d24db0c2eafda3c93be72322a40f7487)
 
 [Back to the top](#billed)
 
@@ -47,12 +47,12 @@ the bug concerned the admin's login that wan'st working. The file scr/containers
 ### Bills-hunt
 the bug concerned a display problem regarding the receipt of the bill. The goal here was to check the type of the file before to check the file type before sending it to the database. src/containers/NewBill.js was manly concerned by this bug, but I made some modifications in CSS and in the View.
 
-> fixed bug hunt [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/05c2dbd5d24db0c2eafda3c93be72322a40f7487)
+> fixed bug hunt [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/7fedf340373056ba380a5922814ab3c8ed90132d)
 
 ### Dashboard
 the bug concerned admin's Dashboard. A bad behavior was observed in a particular scenario. When the admin clicks on a drop-down, it opens, he clicks on a bill to open it and then clicks on another drop-down, then it was impossible for him to open a bill that was in the first drop-down.The file scr/containers/Dashboard.js was concerned by this bug !
 
-> fixed bug hunt [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/05c2dbd5d24db0c2eafda3c93be72322a40f7487)
+> fixed bug hunt [here](https://github.com/Roy-Framery-s-Openclassrooms-projects/RoyFramery_9_031221/commit/c215a993df9fecf120c82a694a844e3b72154429)
 
 [Back to the top](#billed)
 
